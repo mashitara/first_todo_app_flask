@@ -4,7 +4,15 @@
     <title>todoアプリ</title>
 </head>
 <body>
-    <h1>はじめてのFlask</h1>
-    <p>HTML表示成功！</p>
+    <h1>タスク一覧</h1>
+    <form method="POST">
+        <input type="text" name="title">
+        <button type="submit">追加</button>
+    </form>
+    <ul>
+        {% for task in tasks %}
+            <li> {{ task[0] }} </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
