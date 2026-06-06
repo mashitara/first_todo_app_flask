@@ -6,7 +6,7 @@
     <body>
         <h2>タスク編集</h2>
         <form action="/update/{{ task[0] }}" method="POST">
-            <input type="text" name="title" placeholder="タスクを編集">
+            <input type="text" name="title" placeholder="タスクを編集" value="{{ task[1] }}">
             <button type="submit">編集</button>
         </form>
     </body>
