@@ -12,6 +12,13 @@
             <input type="text" name="title" placeholder="タスクを入力">
             <button type="submit">追加</button>
         </form>
+        <form method="GET">
+            <select name="sort">
+                <option value="new">新しい順</option>
+                <option value="old">古い順</option>
+            </select>
+            <button>並び替え</button>
+        </form>
         <ul>
             {% for task in tasks %}
                 <li class="task-item"> 
@@ -22,7 +29,7 @@
                     {% endif %}
                     <a href="/edit/{{ task[0] }}">編集</a>
 
-                    <a href="/toggle/{{ task[0] }}">完了</a>
+                    <a href="{{ url_for('toggle',task_id=task[0],sort=request.args.get('sort', 'new')) }}">完了</a>
                 
                     <form action="/delete/{{ task[0] }}" method="POST" style="display:inline;">
                         <button>削除</button>
