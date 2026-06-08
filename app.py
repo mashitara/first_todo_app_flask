@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
 
 app = Flask(__name__)
+app.secret_key = "test_secret_key"
 task = ["乗り越えて見せる", "世俗も", "肉欲も"]
 
 @app.route("/")
@@ -115,6 +116,58 @@ def toggle(task_id):
     conn.close()
 
     return redirect(url_for("index", sort=sort))
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    conn = mysql.connector.connect(
+        host = "localhost",
+        user = "ms",
+        password = "",
+        db = "todo_app"
+    )
+
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password,))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    conn = mysql.connector.connect(
+        host = "localhost",
+        user = "ms",
+        password = "",
+        db = "todo_app"
+    )
+
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE username = (%s)", (username,))
+
+        user = cursor.fetchone()
+
+        if user and user[2] == password:
+            session["user_id"] = user[0]
+            session["username"] = user[1]
+            return redirect(url_for("index"))
+
+    return "ログイン失敗"
+
+
+
+    
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
