@@ -26,6 +26,9 @@ def index():
     tasks = cursor.fetchall()
 
     conn.close()
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
     return render_template("index.html", tasks=tasks)
 
 @app.route("/add", methods=["POST"])
@@ -38,6 +41,7 @@ def add():
         database = "todo_app"
     )
 
+    sort = request.form["sort"]
     cursor = conn.cursor()
 
     title = request.form["title"]
@@ -46,7 +50,7 @@ def add():
     conn.commit()
     conn.close()
     
-    return redirect("/")
+    return redirect(url_for("index", sort=sort))
 
 @app.route("/delete/<int:task_id>", methods=["POST"])
 def delete(task_id):
@@ -57,6 +61,7 @@ def delete(task_id):
         database = "todo_app"
     )
 
+    sort = request.args.get("sort", "new")
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM tasks WHERE id = (%s)", (task_id,))
@@ -64,7 +69,7 @@ def delete(task_id):
     conn.commit()
     conn.close()
 
-    return redirect("/")
+    return redirect(url_for("index", sort=sort))
 
 @app.route("/edit/<int:task_id>")
 def edit(task_id):
@@ -162,7 +167,7 @@ def login():
             session["username"] = user[1]
             return redirect(url_for("index"))
 
-    return "ログイン失敗"
+    return render_template("login.html")
 
 
 

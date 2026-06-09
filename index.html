@@ -6,9 +6,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <dir class="container">
+    <div class="container">
         <h1>タスク一覧</h1>
         <form method="POST" action="/add">
+            <input type="hidden" name="sort" value="{{ request.args.get('sort', 'new') }}">
             <input type="text" name="title" placeholder="タスクを入力">
             <button type="submit">追加</button>
         </form>
@@ -31,12 +32,12 @@
 
                     <a href="{{ url_for('toggle',task_id=task[0],sort=request.args.get('sort', 'new')) }}">完了</a>
                 
-                    <form action="/delete/{{ task[0] }}" method="POST" style="display:inline;">
+                    <form action="{{ url_for('delete',task_id=task[0],sort=request.args.get('sort', 'new')) }}" method="POST" style="display:inline;">
                         <button>削除</button>
                     </form>  
                 </li>
             {% endfor %}
         </ul>
-    </dir> 
+    </div> 
 </body>
 </html>
