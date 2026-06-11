@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 
 app = Flask(__name__)
@@ -133,7 +134,7 @@ def register():
 
     if request.method == "POST":
         username = request.form["username"]
-        password = request.form["password"]
+        password = generate_password_hash(request.form["password"])
 
         cursor = conn.cursor()
         cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password,))
@@ -162,12 +163,17 @@ def login():
 
         user = cursor.fetchone()
 
-        if user and user[2] == password:
+        if user and check_password_hash(user[2], password):
             session["user_id"] = user[0]
             session["username"] = user[1]
             return redirect(url_for("index"))
 
     return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 
 
