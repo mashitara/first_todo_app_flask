@@ -8,6 +8,9 @@ task = ["乗り越えて見せる", "世俗も", "肉欲も"]
 
 @app.route("/")
 def index():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     conn = mysql.connector.connect(
         host = "localhost",
         user = "ms",
@@ -17,19 +20,19 @@ def index():
     sort = request.args.get("sort", "new")
 
     if sort == "new":
-        sql = "SELECT * FROM tasks ORDER BY id DESC"
+        sql = "SELECT * FROM tasks WHERE user_id = %s ORDER BY id DESC"
     else:
-        sql = "SELECT * FROM tasks ORDER BY id ASC"
+        sql = "SELECT * FROM tasks WHERE user_id = %s ORDER BY id ASC"
 
     cursor = conn.cursor()
-    cursor.execute(sql)
+
+    cursor.execute(sql, (session["user_id"],))
 
     tasks = cursor.fetchall()
 
     conn.close()
 
-    if "user_id" not in session:
-        return redirect(url_for("login"))
+    
     return render_template("index.html", tasks=tasks)
 
 @app.route("/add", methods=["POST"])
@@ -46,7 +49,7 @@ def add():
     cursor = conn.cursor()
 
     title = request.form["title"]
-    cursor.execute("INSERT INTO tasks (title) VALUES (%s)", (title,))
+    cursor.execute("INSERT INTO tasks (title,user_id) VALUES (%s, %s)", (title, session["user_id"]))
 
     conn.commit()
     conn.close()
