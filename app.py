@@ -18,7 +18,7 @@ def index():
         database = "todo_app"
     )
     sort = request.args.get("sort", "new")
-
+    
     if sort == "new":
         sql = "SELECT * FROM tasks WHERE user_id = %s ORDER BY id DESC"
     else:
@@ -27,7 +27,6 @@ def index():
     cursor = conn.cursor()
 
     cursor.execute(sql, (session["user_id"],))
-
     tasks = cursor.fetchall()
 
     conn.close()
@@ -108,8 +107,10 @@ def update(task_id):
 
     return redirect("/")
 
-@app.route("/toggle/<int:task_id>")
+@app.route("/toggle/<int:task_id>", methods=["POST"])
 def toggle(task_id):
+    print(f"toggle:{task_id}")
+    
     conn = mysql.connector.connect(
         host = "localhost",
         user = "ms",
@@ -124,7 +125,8 @@ def toggle(task_id):
     conn.commit()
     conn.close()
 
-    return redirect(url_for("index", sort=sort))
+    #return redirect(url_for("index", sort=sort))
+    return {"success": True}
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
