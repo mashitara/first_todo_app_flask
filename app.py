@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 
 app = Flask(__name__)
 app.secret_key = "test_secret_key"
-task = ["乗り越えて見せる", "世俗も", "肉欲も"]
+Hathaway = ["乗り越えて見せる", "世俗も", "肉欲も"]
 
 @app.route("/")
 def index():
@@ -72,7 +72,8 @@ def delete(task_id):
     conn.commit()
     conn.close()
 
-    return redirect(url_for("index", sort=sort))
+    #return redirect(url_for("index", sort=sort))
+    return jsonify({"success": True})
 
 @app.route("/edit/<int:task_id>")
 def edit(task_id):

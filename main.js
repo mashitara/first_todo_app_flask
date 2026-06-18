@@ -5,10 +5,9 @@ button.addEventListener("click", () => {
     completed.classList.toggle("completed");
 });
 */
+
+//完了したタスクに線を引くよを非同期化
 const links = document.querySelectorAll(".toggle-link");
-
-//console.log(links);
-
 links.forEach(link => {
     link.addEventListener("click", async (event) => {
         event.preventDefault();
@@ -25,5 +24,23 @@ links.forEach(link => {
         const data = await response.json();
         console.log(data);
 
+    });
+});
+
+//削除ボタンを非同期化
+document.querySelectorAll(".delete-btn")
+.forEach(button => {
+    button.addEventListener("click", function (event) {
+        event.preventDefault();
+        fetch(`/delete/${this.dataset.id}`, {
+            method: "POST"
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.success) {
+                document.querySelector(`#task-${this.dataset.id}`).remove();
+            }
+        });
     });
 });

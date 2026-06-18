@@ -22,7 +22,7 @@
         </form>
         <ul>
             {% for task in tasks %}
-                <li class="task-item"> 
+                <li class="task-item" id="task-{{ task[0] }}"> 
                     {% if task[2] %}
                         <span class="completed">{{ task[1] }}</span>
                     {% else %}
@@ -33,7 +33,7 @@
                     <a class="toggle-link" data-id="{{ task[0] }}" href="{{ url_for('toggle',task_id=task[0],sort=request.args.get('sort', 'new')) }}">完了</a>
                 
                     <form action="{{ url_for('delete',task_id=task[0],sort=request.args.get('sort', 'new')) }}" method="POST" style="display:inline;">
-                        <button>削除</button>
+                        <button class="delete-btn" data-id="{{ task[0] }}">削除</button>
                     </form>  
                 </li>
             {% endfor %}
