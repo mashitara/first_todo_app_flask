@@ -8,10 +8,10 @@
 <body>
     <div class="container">
         <h1>タスク一覧<a href="/logout" class="logout">Logout</a></h1>
-        <form method="POST" action="/add">
+        <form class="form" method="POST" action="/add">
             <input type="hidden" name="sort" value="{{ request.args.get('sort', 'new') }}">
             <input type="text" name="title" placeholder="タスクを入力">
-            <button type="submit">追加</button>
+            <button class="add-btn" type="submit">追加</button>
         </form>
         <form method="GET">
             <select name="sort">
@@ -20,21 +20,26 @@
             </select>
             <button>並び替え</button>
         </form>
-        <ul>
+        <ul class="task-item">
             {% for task in tasks %}
-                <li class="task-item" id="task-{{ task[0] }}"> 
+                <li id="task-{{ task[0] }}"> 
                     {% if task[2] %}
-                        <span class="completed">{{ task[1] }}</span>
+                    <span class="completed">{{ task[1] }}</span>
                     {% else %}
-                        <span>{{ task[1] }}</span>
+                    <span>{{ task[1] }}</span>
                     {% endif %}
                     <a href="/edit/{{ task[0] }}">編集</a>
 
+                    <!--
                     <a class="toggle-link" data-id="{{ task[0] }}" href="{{ url_for('toggle',task_id=task[0],sort=request.args.get('sort', 'new')) }}">完了</a>
-                
+                    -->
+                    <button class="toggle-link" data-id="{{ task[0] }}">完了</button>
+                    <!--
                     <form action="{{ url_for('delete',task_id=task[0],sort=request.args.get('sort', 'new')) }}" method="POST" style="display:inline;">
                         <button class="delete-btn" data-id="{{ task[0] }}">削除</button>
-                    </form>  
+                    </form>
+                    -->  
+                    <button id="task" class="delete-btn" data-id="{{ task[0] }}">削除</button>
                 </li>
             {% endfor %}
         </ul>

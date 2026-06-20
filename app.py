@@ -48,12 +48,22 @@ def add():
     cursor = conn.cursor()
 
     title = request.form["title"]
+    #print(request.form)
     cursor.execute("INSERT INTO tasks (title,user_id) VALUES (%s, %s)", (title, session["user_id"]))
 
     conn.commit()
+
+    task_id = cursor.lastrowid
+
     conn.close()
     
-    return redirect(url_for("index", sort=sort))
+    #return redirect(url_for("index", sort=sort))
+    return jsonify({
+        "id": task_id,
+        "title": title,
+        "complated": False,
+        "user_id": session["user_id"]
+    })
 
 @app.route("/delete/<int:task_id>", methods=["POST"])
 def delete(task_id):
