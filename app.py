@@ -85,7 +85,7 @@ def delete(task_id):
     #return redirect(url_for("index", sort=sort))
     return jsonify({"success": True})
 
-@app.route("/edit/<int:task_id>")
+@app.route("/edit/<int:task_id>", methods=["POST"])
 def edit(task_id):
     conn = mysql.connector.connect(
         host = "localhost",
@@ -94,11 +94,20 @@ def edit(task_id):
         db = "todo_app"
     )
 
+    title = request.form["title"]
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM tasks WHERE id = (%s) ", (task_id,))
-    task = cursor.fetchone()
+    #cursor.execute("SELECT * FROM tasks WHERE id = (%s) ", (task_id,))
+    cursor.execute("UPDATE tasks SET title = (%s) WHERE id = (%s) ", (title, task_id,))
 
-    return render_template("edit.html", task=task)
+    conn.commit()
+    conn.close()
+    #task = cursor.fetchone()
+
+    #return render_template("edit.html", task=task)
+    return jsonify({
+        "success": True,
+        "title": title
+    })
 
 @app.route("/update/<int:task_id>", methods=["POST"])
 def update(task_id):

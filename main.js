@@ -39,10 +39,41 @@ document.querySelector(".task-item")
                 document.querySelector(`#task-${e.target.dataset.id}`).remove();
             }
         });
+    } else if (e.target.classList.contains("edit-btn")) {
+        if (e.target.textContent === "編集") {
+                
+            const li = e.target.parentElement;
+            const span = li.querySelector("span");
+
+            const title = span.textContent;
+            span.outerHTML = `<input class="edit-input" value="${title}">`;
+            e.target.textContent = "保存";
+        } else {
+            
+            const li = e.target.parentElement;
+            const input = li.querySelector(".edit-input")
+            const title = input.value;
+            const formData = new FormData();
+            formData.append("title", title);
+
+            fetch(`/edit/${e.target.dataset.id}`, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    input.outerHTML = `<span>${title}</span>`
+                    e.target.textContent = "編集"
+                }
+            });
+        }
     }
 });
 
 //完了したタスクに線を引くよを非同期化
+/*
 const links = document.querySelectorAll(".toggle-link");
 links.forEach(link => {
     link.addEventListener("click", async (event) => {
@@ -62,7 +93,9 @@ links.forEach(link => {
 
     });
 });
+*/
 
+/*
 //削除ボタンを非同期化
 document.querySelectorAll(".delete-btn")
 .forEach(button => {
@@ -80,6 +113,7 @@ document.querySelectorAll(".delete-btn")
         });
     });
 });
+*/
 
 //タスク追加処理を非同期化
 
@@ -101,7 +135,7 @@ document.querySelector(".add-btn")
             "afterbegin",
             `<li id="task-${data.id}">
                 <span>${data.title}</span>
-                <a href="/edit/${data.id}">編集</a>
+                <button class="edit-btn" data-id="${data.id}">編集</button>
                 <button class="toggle-link" data-id="${data.id}">完了</button>
                 <button class="delete-btn" data-id="${data.id}">削除</button>
             </li>
