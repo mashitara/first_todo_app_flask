@@ -47,7 +47,7 @@ def add():
     sort = request.form["sort"]
     cursor = conn.cursor()
 
-    title = request.form["title"]
+    title = request.form["title"].strip()
     #print(request.form)
     cursor.execute("INSERT INTO tasks (title,user_id) VALUES (%s, %s)", (title, session["user_id"]))
 
@@ -58,11 +58,17 @@ def add():
     conn.close()
     
     #return redirect(url_for("index", sort=sort))
+    if not title:
+        return jsnoify({
+            "success": False,
+            "message": "タスクを入力してください"
+        })
     return jsonify({
         "id": task_id,
         "title": title,
         "complated": False,
-        "user_id": session["user_id"]
+        "user_id": session["user_id"],
+        "success": True
     })
 
 @app.route("/delete/<int:task_id>", methods=["POST"])

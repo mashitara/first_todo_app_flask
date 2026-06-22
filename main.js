@@ -120,6 +120,14 @@ document.querySelectorAll(".delete-btn")
 document.querySelector(".add-btn")
 .addEventListener("click", function (e) {
     e.preventDefault();
+
+    const input = document.querySelector("[name ='title']");
+    const title = input.value.trim();
+
+    if (title === "") {
+        alert("タスクを入力してください");
+        return;
+    }
     
     const form = document.querySelector(".form");
     const formData = new FormData(form);
@@ -130,6 +138,10 @@ document.querySelector(".add-btn")
     })
     .then(response => response.json())
     .then(data => {
+        if (!data.success) {
+            alert(data.message);
+            return;
+        }
         const taskList = document.querySelector(".task-item")
         taskList.insertAdjacentHTML(
             "afterbegin",
