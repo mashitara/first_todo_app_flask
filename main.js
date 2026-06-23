@@ -6,6 +6,21 @@ button.addEventListener("click", () => {
 });
 */
 
+function showFlashMessage(message) {
+    const flash = document.querySelector(".flash-message");
+    console.log(document.querySelector(".flash-message"));
+    flash.textContent = message;
+    //document.body.appendChild(flash);
+    flash.style.opacity = "1";
+
+    setTimeout( () => {
+        flash.style.opacity = "0";
+        setTimeout(() => {
+            //flash.remove();
+        }, 500);
+    }, 1000);
+}
+
 //イベント委譲
 document.querySelector(".task-item")
 .addEventListener("click", async function(e) {
@@ -36,7 +51,11 @@ document.querySelector(".task-item")
         .then(data => {
             console.log(data);
             if (data.success) {
+                if (!confirm("削除しますか？")) {
+                    return;
+                }
                 document.querySelector(`#task-${e.target.dataset.id}`).remove();
+                showFlashMessage("タスクを削除しました");
             }
         });
     } else if (e.target.classList.contains("edit-btn")) {
@@ -142,6 +161,7 @@ document.querySelector(".add-btn")
             alert(data.message);
             return;
         }
+        input.value = "";
         const taskList = document.querySelector(".task-item")
         taskList.insertAdjacentHTML(
             "afterbegin",
@@ -153,5 +173,6 @@ document.querySelector(".add-btn")
             </li>
             `
         );
+        showFlashMessage("タスクを追加しました");
     });
 });

@@ -12,3 +12,7 @@ h1 {
 .completed {
     text-decoration: line-through;
 }
+
+.flash-message {
+    transition: opacity 0.5s ease;
+}

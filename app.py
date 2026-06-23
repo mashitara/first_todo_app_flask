@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 
@@ -56,6 +56,8 @@ def add():
     task_id = cursor.lastrowid
 
     conn.close()
+
+    #flash("タスクを追加しました")
     
     #return redirect(url_for("index", sort=sort))
     if not title:
@@ -87,6 +89,8 @@ def delete(task_id):
 
     conn.commit()
     conn.close()
+
+    #flash("タスクを削除しました")
 
     #return redirect(url_for("index", sort=sort))
     return jsonify({"success": True})
@@ -204,6 +208,9 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
+    
+    #Flashはページ遷移ありき
+    flash("ログアウトしました")
     return redirect(url_for("login"))
 
 
