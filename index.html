@@ -20,6 +20,9 @@
             </select>
             <button>並び替え</button>
         </form>
+        <div class="task-summary" data-count="{{tasks | length}}">
+            タスク件数：{{ tasks | length}}
+        </div>
         <ul class="task-item">
             {% for task in tasks %}
                 <li id="task-{{ task[0] }}"> 

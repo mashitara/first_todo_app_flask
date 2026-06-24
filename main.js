@@ -15,9 +15,6 @@ function showFlashMessage(message) {
 
     setTimeout( () => {
         flash.style.opacity = "0";
-        setTimeout(() => {
-            //flash.remove();
-        }, 500);
     }, 1000);
 }
 
@@ -54,7 +51,15 @@ document.querySelector(".task-item")
                 if (!confirm("削除しますか？")) {
                     return;
                 }
+
                 document.querySelector(`#task-${e.target.dataset.id}`).remove();
+                
+                const summary = document.querySelector(".task-summary");
+                let count = summary.dataset.count;
+                count--;
+                summary.dataset.count = count;
+                summary.textContent = `タスク件数：${count}`;
+                
                 showFlashMessage("タスクを削除しました");
             }
         });
@@ -173,6 +178,12 @@ document.querySelector(".add-btn")
             </li>
             `
         );
+        const summary = document.querySelector(".task-summary");
+        let count = Number(summary.dataset.count);
+        count++;
+        summary.dataset.count = count;
+        summary.textContent = `タスク件数：${count}`;
+
         showFlashMessage("タスクを追加しました");
     });
 });
